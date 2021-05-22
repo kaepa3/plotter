@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/csv"
-	"fmt"
 	"math/rand"
 	"os"
 	"strconv"
@@ -11,7 +10,12 @@ import (
 
 func main() {
 
-	file, err := os.OpenFile("csvpath", os.O_WRONLY|os.O_CREATE, 0600)
+	path := "sample.csv"
+	if len(os.Args) >= 2 {
+		path = os.Args[1]
+	}
+
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		panic(err)
 	}
@@ -26,7 +30,6 @@ func main() {
 		if err != nil {
 			break
 		}
-		fmt.Println(val)
 	}
 	writer.Flush()
 }
