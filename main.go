@@ -56,7 +56,8 @@ func CreatePlotData(path string) plotter.XYs {
 	defer file.Close()
 	list := plotter.XYs{}
 	reader := csv.NewReader(file)
-	for idx := 0; idx < 100; idx++ {
+	idx := 1
+	for {
 		rand.Seed(time.Now().UnixNano())
 		val, err := reader.Read()
 		if err != nil {
@@ -64,6 +65,7 @@ func CreatePlotData(path string) plotter.XYs {
 		}
 		v, _ := strconv.Atoi(val[1])
 		list = append(list, plotter.XY{X: (float64)(idx), Y: (float64)(v)})
+		idx += 1
 	}
 
 	return list
