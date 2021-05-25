@@ -48,3 +48,6 @@ Temporary Items
 
 
 *.png
+*.csv
+plotter
+sample.csv

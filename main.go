@@ -19,33 +19,49 @@ func main() {
 		fmt.Println("few args:", len(os.Args))
 		return
 	}
-	path := os.Args[1]
-
-	if !Exists(path) {
-		fmt.Println("no file:", path)
-		return
-	}
-
-	list := CreatePlotData(path)
-
 	// 図の生成
 	p := plot.New()
 	//label
 	p.X.Label.Text = "X"
 	p.Y.Label.Text = "Y"
+	for i := 1; i < len(os.Args); i++ {
 
-	// 補助線
-	p.Add(plotter.NewGrid())
-	plot1, _ := plotter.NewScatter(list)
-	plot1.GlyphStyle.Color = color.RGBA{R: 255, B: 128, A: 55}
+		path := os.Args[i]
 
-	//plot1,plot2をplot
-	p.Add(plot1)
+		if !Exists(path) {
+			fmt.Println("no file:", path)
+			continue
+		}
+
+		list := CreatePlotData(path)
+		// 補助線
+		p.Add(plotter.NewGrid())
+		plot, _ := plotter.NewScatter(list)
+		plot.GlyphStyle.Color = GetColor(i)
+
+		//plotをplot
+		p.Add(plot)
+	}
 
 	// plot.pngに保存
 	if err := p.Save(6*vg.Inch, 6*vg.Inch, "plot.png"); err != nil {
 		panic(err)
 	}
+
+}
+func GetColor(idx int) color.RGBA {
+	var c color.RGBA
+	switch idx {
+	case 0:
+		c = color.RGBA{R: 255, G: 128, B: 0, A: 255}
+	case 1:
+		c = color.RGBA{R: 255, B: 0, A: 255}
+	case 2:
+		c = color.RGBA{R: 0, B: 255, A: 255}
+	case 3:
+		c = color.RGBA{R: 0, B: 0, A: 255}
+	}
+	return c
 
 }
 func CreatePlotData(path string) plotter.XYs {
@@ -63,8 +79,8 @@ func CreatePlotData(path string) plotter.XYs {
 		if err != nil {
 			break
 		}
-		v, _ := strconv.Atoi(val[1])
-		list = append(list, plotter.XY{X: (float64)(idx), Y: (float64)(v)})
+		v, _ := strconv.ParseFloat(val[0], 64)
+		list = append(list, plotter.XY{X: (float64)(idx), Y: v})
 		idx += 1
 	}
 
